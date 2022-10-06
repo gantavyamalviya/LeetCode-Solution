@@ -1,22 +1,11 @@
 class Solution {
 public:
-    int dp[202][10001] ;
-    bool solve(vector<int>& nums, int sum, int i){
-        if(sum == 0)  return true;
-        if(sum<0 or i>=size(nums)){
-            return false;
-        }
-        if(dp[i][sum] != -1) return dp[i][sum];
-        return dp[i][sum] = solve(nums, sum-nums[i], i+1) || solve(nums, sum, i+1);
-    }
     bool canPartition(vector<int>& nums) {
-        int sum = 0;
-        memset(dp, -1, sizeof(dp));
-        for(auto x : nums){
-            sum+=x;
-        }
-        if(sum%2 != 0) return false;
-        sum/=2;
-        return solve(nums, sum, 0);  
+        int totalSum = accumulate(begin(nums), end(nums), 0), halfSum = totalSum / 2;
+        if(totalSum & 1) return false;
+        bitset<10001> dp(1);       // 0 is always achievable => dp[0] = 1
+        for(int num : nums) 
+            dp = dp | dp << num;
+        return dp[halfSum];
     }
 };
